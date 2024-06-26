@@ -2,131 +2,83 @@
 #include <ctime>
 using namespace std;
 
+
+
 template<typename T>
-T** createMatrix(int row, int col)
-{
+T** createMatrix(int row, int col) {
     T** arr = new T * [row];
-    for (int i = 0; i < row; i++)
-    {
+    for (int i = 0; i < row; i++) {
         arr[i] = new T[col];
     }
     return arr;
 }
-void unite_arrays(int* arr1, int col, int* arr2, int row, int* C) {
-    for (size_t i = 0; i < col; i++)
-    {
-        for (size_t j = 0; j < row; j++)
-        {
-            C[i, j] = arr1[i, j];
-        }
-    }
-    for (size_t i = 0; i < col; i++)
-    {
-        for (size_t j = 0; j < row; j++)
-        {
-            C[col + i, row + j] = arr2[i, j];
-        }
-    }
-}
-/*template<typename T>
-T** addRowToEnd(T** arr, int& row, int col, int* newRow) 
-{
-    T** P_arr = createMatrix<int>(row, col);
-    for (int i = 0; i < row; ++i) 
-    {
-        P_arr[i] = arr[i];
-    }
-    P_arr[row] = newRow;
-    ++row;
-    delete[] arr;
-    return P_arr;
-}*/
 
 template<typename T>
-void fillMatrix(T** arr, int row, int col)
-{
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
+void fillMatrix(T** arr, int row, int col) {
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             arr[i][j] = rand() % 10;
         }
     }
 }
 
 template<typename T>
-void printMatrix(T** arr, int row, int col)
-{
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
+void printMatrix(T** arr, int row, int col) {
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             cout << arr[i][j] << " ";
         }
         cout << endl;
     }
 }
 
-int main()
-{
+template<typename T>
+T** addRowToEnd(T** arr, int& row, int col, T* newRow) {
+    T** newArr = createMatrix<T>(row + 1, col);
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            newArr[i][j] = arr[i][j];
+        }
+    }
+    for (int j = 0; j < col; j++) {
+        newArr[row][j] = newRow[j];
+    }
+    row++;
+    return newArr;
+}
+
+int main() {
     srand(time(0));
     int col, row;
-    cout << "enter column";
+    cout << "enter column: ";
     cin >> col;
-    cout << "enter rows";
+    cout << "enter rows: ";
     cin >> row;
-    int** arr1 = createMatrix<int>(row, col);
-    int** arr2 = createMatrix<int>(row, col);
 
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
-            arr1[i][j] = rand() % 10;
-        }
-    }
-   
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
-            arr2[i][j] = rand() % 10;
-        }
-    }
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
-            cout << arr1[i][j] << " ";
-        }
-        cout << endl;
+    int** arr = createMatrix<int>(row, col);
+    fillMatrix(arr, row, col);
+
+    cout << "Original array:" << endl;
+    printMatrix(arr, row, col);
+
+    int* newRow = new int[col];
+    for (int i = 0; i < col; i++) {
+        newRow[i] = rand() % 10;
     }
 
-    for (size_t i = 0; i < row; i++)
-    {
-        for (size_t j = 0; j < col; j++)
-        {
-            cout << arr2[i][j] << " ";
-        }
-        cout << endl;
+    int** newArr = addRowToEnd(arr, row, col, newRow);
+
+    cout << "Array after adding a new row to the end:" << endl;
+    printMatrix(newArr, row, col);
+
+    for (int i = 0; i < row; i++) {
+        delete[] newArr[i];
     }
-    fillMatrix(arr1, row, col);
-    printMatrix(arr1, row, col);
-    int* C = new int[col * 2, row * 2];
-
-    unite_arrays(*arr1, col, *arr2, row, C);
-
-    cout << "combined array ";
-    for (size_t i = 0; i < col * 2; i++)
-    {
-        for (size_t j = 0; j < row * 2; j++)
-        {
-            cout << C[i, j] << " ";
-        }
-    }
-    cout << endl;
+    delete[] newArr;
+    delete[] newRow;
 
 
 
+    system("pause");
     return 0;
 }
